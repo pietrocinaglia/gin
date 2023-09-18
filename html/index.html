@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>SRNG-Align</title>
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- Main Style Css -->
+    <link rel="stylesheet" href="static/css/style.css"/>
+</head>
+<body>
+	<!-- Modal -->
+	
+	<!-- Steps -->
+	<div class="page-content" style="background-color: white">
+		<div class="wizard-v2-content">
+			<div class="wizard-image">
+			</div>
+			<div class="wizard-form">
+				<div class="wizard-header">
+					<h4>Generate your dataset for free.</h4>
+				</div>
+		        <form class="form-register" action="generate" method="POST" id="formData" name="formData">
+		        	<div id="form-total">
+		        		<!-- SECTION 1 -->
+			            <h2>1</h2>
+			            <section>
+			                <div class="inner">
+								<div class="form-row">
+									<div class="form-holder">
+										<input type="text" placeholder="Dataset's name" class="form-control" id="dataset_name">
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-holder form-holder-2">
+										<select name="ntype" id="ntype" class="form-control">
+											<!--<option value="" disabled selected>Network Graph Model</option>-->
+											<option value="multilayer" selected>Multilayer Network</option>
+										</select>
+										<span class="select-btn">
+											<i class="zmdi zmdi-chevron-down"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+			            </section>
+						<!-- SECTION 2 -->
+			            <h2>2</h2>
+			            <section>
+			                <div class="inner">
+								<div class="" style="text-align:right; color:grey">
+									<i>[ Default: def. ]</i><BR><BR>
+								</div>
+								<div class="form-row">
+									<div class="form-holder">
+										<input type="text" placeholder="No. of layers (def.: 2)" class="form-control" id="l">
+									</div>
+									<div class="form-holder">
+										<input type="text" placeholder="Nodes per layer (def.: 50)" class="form-control" id="n">
+									</div>
+								</div>
+							</div>
+			            </section>
+						<!-- SECTION 3 -->
+			            <h2>3</h2>
+			            <section>
+			                <div class="inner">
+								<div class="" style="text-align:right; color:grey">
+									<i>[ Default: def. ]</i><BR><BR>
+								</div>
+								<div class="">
+									The network will be built based on <i>m</i>, <i>p</i>, <i>q</i> (with <i>p + q < 1</i>), and <i>z</i> as follows:<BR>
+									- <i>m</i> is the number of (intralayer) edges with which a new node attaches to existing nodes;<BR>
+									- <i>p</i> is the probability that <i>m</i> new edges are added;<BR>
+									- <i>q</i> is the probability that <i>m</i> existing edges are rewired to a random chosen edge and the related node;<BR>
+									- <i>z</i> is the percentage of (interlayer) edges that are randomly created between two layers.<BR>
+									<b>Note:</b> the model behaves like a Barabási–Alber model with <i>p = q = 0.</i>
+									<BR><BR>
+								</div>
+								<div class="form-row">
+									<div class="form-holder">
+										<input type="text" placeholder="m (def.: 2)" class="form-control" id="m">
+									</div>
+									<div class="form-holder">
+										<input type="text" placeholder="p (def.: 0)" class="form-control" id="p">
+									</div>
+									<div class="form-holder">
+										<input type="text" placeholder="q (def.: 0)" class="form-control" id="q">
+									</div>
+									<div class="form-holder">
+										<input type="text" placeholder="z (def.: 20)" class="form-control" id="z">
+									</div>
+								</div>
+							</div>
+			            </section>
+			            <!-- SECTION 4 -->
+			            <h2>4</h2>
+			            <section>
+			                <div class="inner">
+								<div class="">
+									The dataset will consist of the main network (previous one) and its own noisy versions.<BR>
+									<i>Noise levels</i> defined the (space-separated) levels of noise that you need.
+									<BR><BR>
+								</div>
+								<div class="form-row">
+									<div class="form-holder">
+										<input type="text" placeholder="Noise levels (def.: 5 10 15 20)" class="form-control" id="noises">
+									</div>
+								</div>
+							</div>
+			            </section>
+						<!-- SECTION 4 -->
+			            <h2>#</h2>
+			            <section>
+			                <div class="inner">
+								<div class="form-row table-responsive">
+									<table class="table">
+										<tbody>
+											<tr class="space-row">
+												<th>Dataset's name:</th>
+												<td id="dataset_name-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>Type:</th>
+												<td id="type-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>No. of layers:</th>
+												<td id="l-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>Nodes per layer:</th>
+												<td id="n-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>Intralayer edge (m):</th>
+												<td id="m-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>p:</th>
+												<td id="p-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>q:</th>
+												<td id="q-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>Percentage of interlayer edges (z):</th>
+												<td id="z-val"></td>
+											</tr>
+											<tr class="space-row">
+												<th>Noise levels:</th>
+												<td id="noises-val"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+			            </section>
+		        	</div>
+		        </form>
+			</div>
+		</div>
+	</div>
+	<script src="static/js/jquery-3.3.1.min.js"></script>
+	<script src="static/js/jquery.steps.js"></script>
+	<script src="static/js/jquery-ui.min.js"></script>
+	<script src="static/js/main.js"></script>
+</body>
+</html>
