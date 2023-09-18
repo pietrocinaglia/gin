@@ -8,6 +8,7 @@ from includes.generator import multilayerNetwork
 from includes.noising import noising
 
 app = Flask(__name__, template_folder='html')
+app.config['DEBUG'] = True
 app.config['TMP_DIRPATH'] = os.path.dirname(__file__) + "/tmp/"
 
 @app.route('/generate', methods=['GET','POST'])
@@ -31,12 +32,12 @@ def generate():
     request_uuid = str(uuid.uuid4())
     # Create temporary directory for current request
     request_tmp_dirpath = app.config['TMP_DIRPATH'] + request_uuid + "/"
-    os.mkdir(request_tmp_dirpath)
+    os.mkdir( request_tmp_dirpath )
 
     # Type of network
     if ntype == 'multilayer':
-        network = multilayerNetwork(dataset_name, l, n, m, p, q, z, request_tmp_dirpath)
-        noising(dataset_name, network, noises, noise_type, request_tmp_dirpath)
+        network = multilayerNetwork( dataset_name, l, n, m, p, q, z, request_tmp_dirpath )
+        noising( dataset_name, network, noises, noise_type, request_tmp_dirpath )
     
     # Compress response as zip file
     shutil.make_archive( app.config['TMP_DIRPATH'] + dataset_name, 'zip', request_tmp_dirpath )
@@ -47,14 +48,22 @@ def generate():
             shutil.rmtree( request_tmp_dirpath )
             os.remove( app.config['TMP_DIRPATH'] + dataset_name + ".zip" )
         except Exception as error:
-            app.logger.error("Error removing temporary director for UUID:" + str(request_uuid), error)
+            app.logger.error( "Error removing temporary director for UUID:" + str(request_uuid), error )
         return response
     
-    return send_file( app.config['TMP_DIRPATH'] + dataset_name + ".zip", mimetype='application/zip')
+    return send_file( app.config['TMP_DIRPATH'] + dataset_name + ".zip", mimetype='application/zip' )
 
 @app.route('/')
 def test():
     return render_template('index.html')
 
+###
+###
 if __name__ == '__main__':
-   app.run(debug=True)
+    if not os.path.isdir( app.config['TMP_DIRPATH'] ):
+        print( "[ WARNING ] The temporary files directory did not exist, and it was created ('tmp')." )
+        os.mkdir( app.config['TMP_DIRPATH'] )
+        with open( app.config['TMP_DIRPATH'] + 'index.html', 'w') as fp:
+            pass
+    # Running app
+    app.run(debug=app.config['DEBUG'])
