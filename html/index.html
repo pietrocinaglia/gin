@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
 	<title>SRNG-Align</title>
+	<meta name="author" content="Pietro Cinaglia">
+	<meta charset="utf-8">
 	<!-- Mobile Specific Metas -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<!-- Main Style Css -->
@@ -18,11 +19,13 @@
 			</div>
 			<div class="wizard-form">
 				<div class="wizard-header">
-					<h4>Generate your dataset for free.</h4>
+					<h3>SRNG</h3>
+					<i><b>Generate your dataset for free.</b></i>
+					<BR><BR>
 				</div>
 		        <form class="form-register" action="generate" method="POST" id="formData" name="formData">
 		        	<div id="form-total">
-		        		<!-- SECTION 1 -->
+		        		<!-- SECTION -->
 			            <h2>1</h2>
 			            <section>
 			                <div class="inner">
@@ -44,7 +47,8 @@
 								</div>
 							</div>
 			            </section>
-						<!-- SECTION 2 -->
+						<!-- SECTION -->
+						<!--
 			            <h2>2</h2>
 			            <section>
 			                <div class="inner">
@@ -60,13 +64,21 @@
 									</div>
 								</div>
 							</div>
-			            </section>
-						<!-- SECTION 3 -->
-			            <h2>3</h2>
+			            </section>-->
+						<!-- SECTION -->
+			            <h2>2</h2>
 			            <section>
 			                <div class="inner">
 								<div class="" style="text-align:right; color:grey">
 									<i>[ Default: def. ]</i><BR><BR>
+								</div>
+								<div class="form-row">
+									<div class="form-holder">
+										<input type="text" placeholder="No. of layers (def.: 2)" class="form-control" id="l">
+									</div>
+									<div class="form-holder">
+										<input type="text" placeholder="Nodes per layer (def.: 50)" class="form-control" id="n">
+									</div>
 								</div>
 								<div class="">
 									The network will be built based on <i>m</i>, <i>p</i>, <i>q</i> (with <i>p + q < 1</i>), and <i>z</i> as follows:<BR>
@@ -93,8 +105,8 @@
 								</div>
 							</div>
 			            </section>
-			            <!-- SECTION 4 -->
-			            <h2>4</h2>
+			            <!-- SECTION -->
+			            <h2>3</h2>
 			            <section>
 			                <div class="inner">
 								<div class="">
@@ -109,7 +121,7 @@
 								</div>
 							</div>
 			            </section>
-						<!-- SECTION 4 -->
+						<!-- SUMMARY -->
 			            <h2>#</h2>
 			            <section>
 			                <div class="inner">
@@ -159,6 +171,9 @@
 			            </section>
 		        	</div>
 		        </form>
+			</div>
+			<div style="margin: 5px 5px 5px 5px; font-size: 9pt;">
+				<a href="javascript:alert('Developed by Pietro Cinaglia, cinaglia(at)unicz.it - Data Analytics Research Center, Magna Graecia University of Catanzaro, Italy.')">Credits</a>
 			</div>
 		</div>
 	</div>

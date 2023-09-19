@@ -85,3 +85,5 @@ if __name__ == '__main__':
                 pass
         # Running app
         app.run(debug=app.config['DEBUG'])
+    else:
+        print( "Autostart is available in Debug Mode only: DEBUG=True" )
