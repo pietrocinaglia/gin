@@ -17,6 +17,9 @@ app.config['DEBUG'] = False
 #
 logging.basicConfig(filename=(BASEPATH+'flask.log'), level=logging.WARNING, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 ###
+@app.route('/healthz', methods=['GET'])
+def healthz():
+    return json.dumps({'status':'online'}), 200
 
 @app.route('/generate', methods=['GET','POST'])
 def generate():
@@ -34,7 +37,7 @@ def generate():
         noise_type = 'shuffling'
     except ValueError:
         app.logger.error( "Request consists of no valid params." )
-        return json.dumps({'error':"Request consists of no valid params."}), 400, {'ContentType':'application/json'}
+        return json.dumps({'error':'Request consists of no valid params.'}), 400, {'ContentType':'application/json'}
 
     # Generate UUDI for current request
     request_uuid = str(uuid.uuid4())
@@ -48,7 +51,7 @@ def generate():
         log = noising( dataset_name, network, noises, noise_type, request_tmp_dirpath, log )
     else:
         app.logger.error( "UUID:" + str(request_uuid) + " - Network type not supported." )
-        return json.dumps({'error':"Network type not supported."}), 400, {'ContentType':'application/json'}
+        return json.dumps({'error':'Network type not supported.'}), 400, {'ContentType':'application/json'}
     
     log = json.dumps(log, indent=4)
     with open( request_tmp_dirpath+'log.json', 'w' ) as outfile:
