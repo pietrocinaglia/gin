@@ -8,11 +8,15 @@ import logging
 from includes.generator import multilayerNetwork
 from includes.noising import noising
 
+###
+BASEPATH = os.path.dirname(__file__) + "/"
+#
 app = Flask(__name__, template_folder='html')
-app.config['TMP_DIRPATH'] = os.path.dirname(__file__) + "/tmp/"
+app.config['TMP_DIRPATH'] = BASEPATH + "tmp/"
 app.config['DEBUG'] = True
-
-logging.basicConfig(filename='flask.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+#
+logging.basicConfig(filename=(BASEPATH+'flask.log'), level=logging.WARNING, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+###
 
 @app.route('/generate', methods=['GET','POST'])
 def generate():
