@@ -3,13 +3,16 @@ from flask import Flask, render_template, request, Response, send_file, after_th
 import json
 import uuid
 import shutil
-
+import logging
+#
 from includes.generator import multilayerNetwork
 from includes.noising import noising
 
 app = Flask(__name__, template_folder='html')
-app.config['DEBUG'] = True
 app.config['TMP_DIRPATH'] = os.path.dirname(__file__) + "/tmp/"
+app.config['DEBUG'] = True
+
+logging.basicConfig(filename='flask.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 @app.route('/generate', methods=['GET','POST'])
 def generate():
@@ -26,7 +29,8 @@ def generate():
         noises = request_data['noises'].split(" ")
         noise_type = 'shuffling'
     except ValueError:
-        return json.dumps({'error':"Request consists of not valid params."}), 400, {'ContentType':'application/json'}
+        app.logger.error( "Request consists of no valid params." )
+        return json.dumps({'error':"Request consists of no valid params."}), 400, {'ContentType':'application/json'}
 
     # Generate UUDI for current request
     request_uuid = str(uuid.uuid4())
@@ -36,9 +40,16 @@ def generate():
 
     # Type of network
     if ntype == 'multilayer':
-        network = multilayerNetwork( dataset_name, l, n, m, p, q, z, request_tmp_dirpath )
-        noising( dataset_name, network, noises, noise_type, request_tmp_dirpath )
+        network, log = multilayerNetwork( dataset_name, l, n, m, p, q, z, request_tmp_dirpath )
+        log = noising( dataset_name, network, noises, noise_type, request_tmp_dirpath, log )
+    else:
+        app.logger.error( "UUID:" + str(request_uuid) + " - Network type not supported." )
+        return json.dumps({'error':"Network type not supported."}), 400, {'ContentType':'application/json'}
     
+    log = json.dumps(log, indent=4)
+    with open( request_tmp_dirpath+'log.json', 'w' ) as outfile:
+        outfile.write(log)
+
     # Compress response as zip file
     shutil.make_archive( app.config['TMP_DIRPATH'] + dataset_name, 'zip', request_tmp_dirpath )
     
@@ -48,7 +59,7 @@ def generate():
             shutil.rmtree( request_tmp_dirpath )
             os.remove( app.config['TMP_DIRPATH'] + dataset_name + ".zip" )
         except Exception as error:
-            app.logger.error( "Error removing temporary director for UUID:" + str(request_uuid), error )
+            app.logger.warning( "UUID:" + str(request_uuid) + " - Error removing temporary directory.", error )
         return response
     
     return send_file( app.config['TMP_DIRPATH'] + dataset_name + ".zip", mimetype='application/zip' )
@@ -61,7 +72,7 @@ def test():
 ###
 if __name__ == '__main__':
     if not os.path.isdir( app.config['TMP_DIRPATH'] ):
-        print( "[ WARNING ] The temporary files directory did not exist, and it was created ('tmp')." )
+        app.logger.info( "Temporary files directory did not exist, and it was created ('tmp')." )
         os.mkdir( app.config['TMP_DIRPATH'] )
         with open( app.config['TMP_DIRPATH'] + 'index.html', 'w') as fp:
             pass
