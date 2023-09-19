@@ -13,7 +13,7 @@ BASEPATH = os.path.dirname(__file__) + "/"
 #
 app = Flask(__name__, template_folder='html')
 app.config['TMP_DIRPATH'] = BASEPATH + "tmp/"
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 #
 logging.basicConfig(filename=(BASEPATH+'flask.log'), level=logging.WARNING, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 ###
@@ -73,12 +73,12 @@ def test():
     return render_template('index.html')
 
 ###
-###
 if __name__ == '__main__':
-    if not os.path.isdir( app.config['TMP_DIRPATH'] ):
-        app.logger.info( "Temporary files directory did not exist, and it was created ('tmp')." )
-        os.mkdir( app.config['TMP_DIRPATH'] )
-        with open( app.config['TMP_DIRPATH'] + 'index.html', 'w') as fp:
-            pass
-    # Running app
-    app.run(debug=app.config['DEBUG'])
+    if app.config['DEBUG']:
+        if not os.path.isdir( app.config['TMP_DIRPATH'] ):
+            app.logger.info( "Temporary files directory did not exist, and it was created ('tmp')." )
+            os.mkdir( app.config['TMP_DIRPATH'] )
+            with open( app.config['TMP_DIRPATH'] + 'index.html', 'w') as fp:
+                pass
+        # Running app
+        app.run(debug=app.config['DEBUG'])
