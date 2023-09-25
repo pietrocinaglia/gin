@@ -48,7 +48,7 @@ def _removing_adding(G, noise:(float) = 0.1, offset:(bool)=False):
 def _shuffling(G, noise:(float) = 0.1):
     edges = [] # only interlayer edges
     for n1, n2, data in G.edges(data=True):
-        if 'interlayer' in data:
+        if 'intralayer' in data:
             edges.append((n1,n2,data))
     
     exchanges = math.floor(len(edges) * noise)
@@ -61,15 +61,15 @@ def _shuffling(G, noise:(float) = 0.1):
         chosen_edge1 = random.choice(edges)
         chosen_edge2 = random.choice(edges)
 
-        if (chosen_edge1[2]['interlayer'] == chosen_edge2[2]['interlayer']):
-            G.add_edge(chosen_edge1[0], chosen_edge2[1], layer=chosen_edge1[2]['interlayer'])
-            G.add_edge(chosen_edge1[1], chosen_edge2[0], layer=chosen_edge1[2]['interlayer'])
+        if (chosen_edge1[2]['intralayer'] == chosen_edge2[2]['intralayer']):
+            G.add_edge(chosen_edge1[0], chosen_edge2[1], intralayer=chosen_edge1[2]['intralayer'])
+            G.add_edge(chosen_edge1[1], chosen_edge2[0], intralayer=chosen_edge1[2]['intralayer'])
             log['shuffles'].append( (str(chosen_edge1[:2]),str(chosen_edge2[:2])) )
             i += 1
 
     return G, log
 
-def noising(dataset_name, network, noises, type, basepath=None, log=dict()):
+def noising(dataset_name, network, noises, noise_type, data=True, basepath=None, log=dict()):
     
     if basepath is None:
         basepath = os.path.dirname(__file__) + "/"
@@ -79,16 +79,19 @@ def noising(dataset_name, network, noises, type, basepath=None, log=dict()):
     for noise in noises:
         noise_decimal = float(noise) / 100
         output = None
-        if type == 'removing':
-            output, output_log = _removing_adding( network, noise_decimal, False )
-        elif type == 'removing_adding':
-            output, output_log = _removing_adding( network, noise_decimal, True )
-        elif type == "shuffling":
+        
+        if noise_type == "shuffling":
             output, output_log = _shuffling( network, noise_decimal )
+        '''
+        elif noise_type == 'removing_adding':
+            output, output_log = _removing_adding( network, noise_decimal, True )
+        elif noise_type == 'removing':
+            output, output_log = _removing_adding( network, noise_decimal, False )
         else:
             break
-        
-        nx.write_edgelist( output, basepath + dataset_name  + "_" + str(noise) + ".txt", data=True)
+        '''
+
+        nx.write_edgelist( output, basepath + dataset_name  + "_" + str(noise) + ".txt", data=data)
         log['noise'][str(noise)] = output_log
     
     return log

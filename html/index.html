@@ -68,8 +68,8 @@
 									- <i>p</i> is the probability that <i>m</i> new edges are added;<BR>
 									- <i>q</i> is the probability that <i>m</i> existing edges are rewired to a random chosen edge and the related node;<BR>
 									- <i>z</i> is the percentage of (interlayer) edges that are randomly created between two layers.<BR>
-									<b>Note:</b> the model behaves like a Barabási–Alber model with <i>p = q = 0.</i>
-									<BR><BR>
+									<b>Note:</b> the model behaves like a Barabási–Alber model with <i>p = q = 0.</i><BR>
+									<BR>
 								</div>
 								<div class="form-row">
 									<div class="form-holder">
@@ -82,8 +82,12 @@
 										<input type="text" placeholder="q (def.: 0)" class="form-control" id="q">
 									</div>
 									<div class="form-holder">
-										<input type="text" placeholder="z (def.: 20)" class="form-control" id="z">
+										<input type="text" placeholder="z (def.: *)" class="form-control" id="z">
 									</div>
+								</div>
+								<div class="">
+									* <i>Default amount of interlayer edges (z) is 20% for multi-layers, and 0% for one-layer.</i><BR>
+									<BR>
 								</div>
 							</div>
 			            </section>

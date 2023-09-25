@@ -39,6 +39,8 @@ $(function(){
             $('#p-val').text( (($('#p').val() == '') ? p : $('#p').val()) );
             $('#q-val').text( (($('#q').val() == '') ? q : $('#q').val()) );
             $('#z-val').text( (($('#z').val() == '') ? z : $('#z').val()) );
+            $('#z-val').text( (($('#l').val() == '1') ? '0' : $('#z').val()) );
+            
             $('#noises-val').text( (($('#noises').val() == '') ? noises : $('#noises').val()) );
 
             return true;

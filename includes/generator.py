@@ -12,9 +12,37 @@ import csv
 
 getcontext().prec = 5  # decimal precision
 
+def staticNetwork(dataset_name:(str), n:(int), m:(int), p:(float), q:(float), basepath=None, log=dict()):
+    if basepath is None:
+        basepath = os.path.dirname(__file__) + "/"
+        
+    log['main'] = {}
+    log['main']['layers'] = []
+
+    tmp = nx.extended_barabasi_albert_graph(n, m, p, q)
+    G = nx.Graph()
+    G.add_nodes_from(tmp.nodes)
+    G.add_edges_from(tmp.edges, intralayer=1)
+
+    log['main']['layers'].append( {"id":1, "nodes": str(G.number_of_nodes()), "edges": str(G.number_of_edges())} )
+
+    # Generate seed
+    seed = []
+    for node in G.nodes():
+        seed.append([str(node), str(node)])
+    with open(basepath + dataset_name + "_seed.txt", 'w', newline='') as file:
+        csv.writer(file, delimiter=' ').writerows(seed)
+
+    nx.write_edgelist(G, basepath + dataset_name + ".txt", data=False)
+
+    return G, log
+
 def multilayerNetwork(dataset_name:(str), l:(int), n:(int), m:(int), p:(float), q:(float), z:(float), basepath=None, log=dict()):
     if basepath is None:
         basepath = os.path.dirname(__file__) + "/"
+        
+    if l == 1:
+        return staticNetwork( dataset_name, n, m, p, q, basepath )
     
     layers = []
     log['main'] = {}
@@ -24,7 +52,7 @@ def multilayerNetwork(dataset_name:(str), l:(int), n:(int), m:(int), p:(float), 
     for i in range(0,l):
         tmp = nx.extended_barabasi_albert_graph(n, m, p, q)
         layer = nx.Graph()
-        layer.add_nodes_from(tmp.nodes) #, id=(i+1)
+        layer.add_nodes_from(tmp.nodes)
         layer.add_edges_from(tmp.edges, intralayer=(i+1))
         log['main']['layers'].append( {"id":str(i+1), "nodes": str(layer.number_of_nodes()), "edges": str(layer.number_of_edges())} )
         layers.append(layer)
@@ -62,13 +90,13 @@ def multilayerNetwork(dataset_name:(str), l:(int), n:(int), m:(int), p:(float), 
             for node in l1.nodes():
                 seed.append([l1_tag+str(node), l1_tag+str(node)])
             with open(basepath + dataset_name + "_seed_" + l1_tag + ".txt", 'w', newline='') as file:
-                csv.writer(file).writerows(seed)
+                csv.writer(file, delimiter=' ').writerows(seed)
 
         seed = []
         for node in l2.nodes():
             seed.append([l2_tag+str(node), l2_tag+str(node)])
         with open(basepath + dataset_name + "_seed_" + l2_tag + ".txt", 'w', newline='') as file:
-            csv.writer(file).writerows(seed)
+            csv.writer(file, delimiter=' ').writerows(seed)
 
     nx.write_edgelist(multiLayerNetwork, basepath + dataset_name + ".txt", data=True)
         
