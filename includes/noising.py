@@ -5,6 +5,8 @@ import random
 from decimal import *
 import math
 
+import csv
+
 ###
 # @author: Pietro Cinaglia
 # @mail: cinaglia@unicz.it
@@ -14,6 +16,7 @@ import math
 getcontext().prec = 5  # decimal precision
 
 # Remove, or Remove-and-Add
+'''
 def _removing_adding(G, noise:(float) = 0.1, offset:(bool)=False):
     log = {"added" : [], "removed": []}
 
@@ -43,31 +46,49 @@ def _removing_adding(G, noise:(float) = 0.1, offset:(bool)=False):
             print("(" + str(chosen_nonedge[0]) + "," + str(chosen_nonedge[1]) + ") ADDED" )
 
     return G, log
+'''
 
 # Shuffling
-def _shuffling(G, noise:(float) = 0.1):
+def _shuffling(G, noise:(float) = 0.1, basepath=None):
+    if basepath is None:
+        basepath = os.path.dirname(__file__) + "/"
+
+    G_noised = G.copy()
     edges = [] # only interlayer edges
-    for n1, n2, data in G.edges(data=True):
+    for n1, n2, data in G_noised.edges(data=True):
         if 'intralayer' in data:
             edges.append((n1,n2,data))
     
-    exchanges = math.floor(len(edges) * noise)
+    exchanges = math.floor( len(edges) * noise / (1+noise) )
    
-    log = dict()
-    log['shuffles'] = []
-
-    i=0
-    while i < exchanges:
+    shuffles = []
+    diff = 0
+    while diff < noise:
         chosen_edge1 = random.choice(edges)
         chosen_edge2 = random.choice(edges)
 
         if (chosen_edge1[2]['intralayer'] == chosen_edge2[2]['intralayer']):
-            G.add_edge(chosen_edge1[0], chosen_edge2[1], intralayer=chosen_edge1[2]['intralayer'])
-            G.add_edge(chosen_edge1[1], chosen_edge2[0], intralayer=chosen_edge1[2]['intralayer'])
-            log['shuffles'].append( (str(chosen_edge1[:2]),str(chosen_edge2[:2])) )
-            i += 1
+            G_noised.add_edge(chosen_edge1[0], chosen_edge2[1], intralayer=chosen_edge1[2]['intralayer'])
+            G_noised.add_edge(chosen_edge1[1], chosen_edge2[0], intralayer=chosen_edge1[2]['intralayer'])
+            shuffles.append( (str(chosen_edge1[:2]),str(chosen_edge2[:2])) )
+            diff = nx.difference(G_noised, G).number_of_edges() / G_noised.number_of_edges()
+    
+    ged = nx.graph_edit_distance(G, G_noised)
+    #
+    log = dict()
+    log['diff'] = round(diff, 3)
+    log['ged'] = ged
+    log['shuffles'] = shuffles
 
-    return G, log
+    # only for testing
+    '''
+    f = open( basepath + '../../results.log' , 'a')
+    writer = csv.writer(f)
+    writer.writerow( [ noise, log['diff'], log['ged'], len(shuffles) ] )
+    f.close()
+    '''
+
+    return G_noised, log
 
 def noising(dataset_name, network, noises, noise_type, data=True, basepath=None, log=dict()):
     
@@ -81,7 +102,7 @@ def noising(dataset_name, network, noises, noise_type, data=True, basepath=None,
         output = None
         
         if noise_type == "shuffling":
-            output, output_log = _shuffling( network, noise_decimal )
+            output, output_log = _shuffling( network, noise_decimal, basepath )
         '''
         elif noise_type == 'removing_adding':
             output, output_log = _removing_adding( network, noise_decimal, True )
