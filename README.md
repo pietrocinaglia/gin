@@ -5,7 +5,7 @@
 
 ### Testing
 
-GIN has been tested by using Gunicorn 'Green Unicorn' (gunicorn), as Python WSGI HTTP Server for UNIX. Note that the folder named 'test' contains the redirect to the ready-to-use web-application.
+GIN has been tested by using Gunicorn 'Green Unicorn' (gunicorn), as Python WSGI HTTP Server for UNIX. Note that index.html is a redirect to the ready-to-use web-application.
 
 
 ### Requirements
