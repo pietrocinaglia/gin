@@ -5,7 +5,7 @@
 
 ### Testing
 
-GIN has been tested by using Gunicorn 'Green Unicorn' (gunicorn), as Python WSGI HTTP Server for UNIX. Note that index.html is a redirect to the ready-to-use web-application.
+GIN has been tested by using Green Unicorn (gunicorn), as Python WSGI HTTP Server for UNIX. Note that 'index.html' is a redirect to the ready-to-use web-application.
 
 
 ### Requirements
@@ -14,15 +14,14 @@ GIN has been tested by using Gunicorn 'Green Unicorn' (gunicorn), as Python WSGI
 jQuery, Bootstrap, and template are already imported, as well. You don't need to do anything.
 
 #### Back-end
-GIN needs Python3 >= 3.9, and the dependencies listed in 'requirements.txt'.
+GIN needs Python3 >= 3.9, and the dependencies listed in 'src/requirements.txt'.
 
-The packages listed into 'requirements.txt' can be installed via [Python Package Installer (pip)](https://pip.pypa.io/en/stable/):
+Dependencies can be installed via [Python Package Installer (pip)](https://pip.pypa.io/en/stable/) as follows:
 
 ```
 pip install -r requirements.txt
 ```
 
-(or its alias 'pip3', if any).
 - Flask
 - networkx
 - gunicorn
