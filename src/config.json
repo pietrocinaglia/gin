@@ -1,0 +1,6 @@
+{
+    "DEBUG": true,
+    "LOG_FILEPATH": "flask.log",
+    "LOG_LEVEL": 30,
+    "TMP_DIRPATH": "tmp"
+}

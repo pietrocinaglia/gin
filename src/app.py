@@ -9,15 +9,10 @@ from includes.generator import staticNetwork, multilayerNetwork
 from includes.noising import noising
 
 ###
-DEBUG = False
+#DEBUG = True
 BASEPATH = os.path.dirname(__file__) + "/"
 #
 app = Flask(__name__, template_folder='html')
-app.config['TMP_DIRPATH'] = BASEPATH + "tmp/"
-app.config['DEBUG'] = DEBUG
-#
-logging.basicConfig(filename=(BASEPATH+'flask.log'), level=logging.WARNING, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-###
 
 @app.route('/healthz', methods=['GET'])
 def healthz():
@@ -47,7 +42,7 @@ def generate():
     # Generate UUDI for current request
     request_uuid = str(uuid.uuid4())
     # Create temporary directory for current request
-    request_tmp_dirpath = app.config['TMP_DIRPATH'] + request_uuid + "/"
+    request_tmp_dirpath = app.config['TMP_DIRPATH'] + "/" +  request_uuid + "/"
     os.mkdir( request_tmp_dirpath )
 
     #
@@ -74,7 +69,7 @@ def generate():
     
     #
     # Compress response as zip file
-    shutil.make_archive( app.config['TMP_DIRPATH'] + dataset_name, 'zip', request_tmp_dirpath )
+    shutil.make_archive( app.config['TMP_DIRPATH'] + "/" +  dataset_name, 'zip', request_tmp_dirpath )
     
     #
     ###
@@ -82,14 +77,14 @@ def generate():
     def clean_temporary(response):
         try:
             shutil.rmtree( request_tmp_dirpath )
-            os.remove( app.config['TMP_DIRPATH'] + dataset_name + ".zip" )
+            os.remove( app.config['TMP_DIRPATH'] + "/" +  dataset_name + ".zip" )
         except Exception as error:
             app.logger.warning( "UUID:" + str(request_uuid) + " - Error removing temporary directory.", error )
         return response
     ###
 
     #
-    return send_file( app.config['TMP_DIRPATH'] + dataset_name + ".zip", mimetype='application/zip' )
+    return send_file( app.config['TMP_DIRPATH'] + "/" +  dataset_name + ".zip", mimetype='application/zip' )
 
 @app.route('/')
 def test():
@@ -97,11 +92,25 @@ def test():
 
 ###
 if __name__ == '__main__':
+    config_data = None
+    with open( BASEPATH + 'config.json' ) as config_file:
+        config_data = json.load(config_file)
+
+    if config_data is None:
+        app.logger.error( "Config file not found, or illegal configuration." )
+        print( "Config file not found, or illegal configuration." )
+        exit()
+
+    app.config.update( config_data )
+    app.config['TMP_DIRPATH'] = BASEPATH + app.config['TMP_DIRPATH']
+
+    logging.basicConfig(filename=(app.config['LOG_FILEPATH']), level=app.config['LOG_LEVEL'], format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+
     if app.config['DEBUG']:
         if not os.path.isdir( app.config['TMP_DIRPATH'] ):
             app.logger.info( "Temporary files directory did not exist, and it was created ('tmp')." )
             os.mkdir( app.config['TMP_DIRPATH'] )
-            with open( app.config['TMP_DIRPATH'] + 'index.html', 'w') as fp:
+            with open( app.config['TMP_DIRPATH'] + "/" +  'index.html', 'w') as fp:
                 pass
         # Running app
         app.run(debug=app.config['DEBUG'])
