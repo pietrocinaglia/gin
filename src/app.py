@@ -9,10 +9,15 @@ from includes.generator import staticNetwork, multilayerNetwork
 from includes.noising import noising
 
 ###
-#DEBUG = True
+# @author: Pietro Cinaglia
+# @mail: cinaglia@unicz.it
+# @description: -
+###
+
+###
 BASEPATH = os.path.dirname(__file__) + "/"
-#
 app = Flask(__name__, template_folder='html')
+#
 
 @app.route('/healthz', methods=['GET'])
 def healthz():
