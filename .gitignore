@@ -1,4 +1,5 @@
 #
+private
 src/tmp/*
 !src/tmp/index.html
 tmp/*
