@@ -5,7 +5,7 @@ import uuid
 import shutil
 import logging
 #
-from includes.generator import static_network, multilayer_network
+from includes.generator import multilayer_network
 from includes.noising import noising
 
 ###
@@ -53,15 +53,9 @@ def generate():
 
     #
     # multilayer
-    if ntype == 'multilayer' and l > 1:
+    if ntype == 'multilayer':
         network, log = multilayer_network( dataset_name, l, n, m, p, q, z, request_tmp_dirpath )
         log = noising( dataset_name, network, noises, noise_type, True, request_tmp_dirpath, log )
-        '''
-    elif ntype == 'static' or l == 1:
-        network, log = static_network( dataset_name, n, m, p, q, request_tmp_dirpath )
-        log = noising( dataset_name, network, noises, noise_type, False, request_tmp_dirpath, log )
-        '''
-    # unrecognized
     else:     
         app.logger.error( "UUID:" + str(request_uuid) + " - Network type not supported." )
         return json.dumps({'error':'Network type not supported.'}), 400, {'ContentType':'application/json'}
