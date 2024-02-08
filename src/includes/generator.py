@@ -9,11 +9,12 @@ import csv
 # @author: Pietro Cinaglia
 # @mail: cinaglia@unicz.it
 # @description: -
+# @url: https://github.com/pietrocinaglia/gin
 ###
 
 getcontext().prec = 5  # decimal precision
 
-def staticNetwork(dataset_name:(str), n:(int), m:(int), p:(float), q:(float), basepath=None, log=dict()):
+def __static_network(dataset_name:(str), n:(int), m:(int), p:(float), q:(float), basepath=None, log=dict()):
     if basepath is None:
         basepath = os.path.dirname(__file__) + "/"
         
@@ -38,12 +39,12 @@ def staticNetwork(dataset_name:(str), n:(int), m:(int), p:(float), q:(float), ba
 
     return G, log
 
-def multilayerNetwork(dataset_name:(str), l:(int), n:(int), m:(int), p:(float), q:(float), z:(float), basepath=None, log=dict()):
+def multilayer_network(dataset_name:(str), l:(int), n:(int), m:(int), p:(float), q:(float), z:(float), basepath=None, log=dict()):
     if basepath is None:
         basepath = os.path.dirname(__file__) + "/"
         
     if l == 1:
-        return staticNetwork( dataset_name, n, m, p, q, basepath )
+        return __static_network( dataset_name, n, m, p, q, basepath )
     
     layers = []
     log['main'] = {}
