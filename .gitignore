@@ -1,6 +1,8 @@
 #
 src/tmp/*
 !src/tmp/index.html
+tmp/*
+!tmp/index.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
